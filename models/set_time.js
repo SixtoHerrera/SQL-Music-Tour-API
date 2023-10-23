@@ -3,57 +3,67 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Band extends Model {
+  class SetTime extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({MeetGreet, SetTime}) {
-      Band.hasMany(MeetGreet, {
+    static associate({ Band, EVent, Stage }) {
+      //Band
+      SetTime.hasOne(Band, {
         foreignKey: "band_id",
-        as: "meet_greets"
+        as: "set_times"
       })
-      Band.hasMany(SetTime, {
-        foreignKey: "band_id",
-        set_time: "set_time"
+      //Event
+      SetTime.belongsTo(Event, {
+        foreignKey: "event_id",
+        as: "event"
+      })
+
+      // stage 
+      SetTime.belongsTo(Stage, {
+        foreignKey: "stage_id",
+        as: "stage"
       })
     }
-  }
-  
-  Band.init({
-    band_id: {
+  };
+  SetTime.init({
+    set_time_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    name: {
-      type: DataTypes.STRING,
+
+    stage_id: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    genre: {
-      type: DataTypes.TEXT,
+
+    event_id: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    available_start_time: {
+
+    band_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+
+    start_time: {
       type: DataTypes.DATE,
       allowNull: false
     },
+
     end_time: {
       type: DataTypes.DATE,
       allowNull: false
     }
-    // ,
-    // recommendation: {
-    //   type: DataTypes.STRING,
-    //   allowNull: true
-    // }
   }, {
     sequelize,
-    modelName: 'Band',
-    tableName: 'bands',
+    modelName: 'SetTime',
+    tableName: 'set_time',
     timestamps: false
-  })
-    ;
-  return Band;
+  });
+  return SetTime;
 };
